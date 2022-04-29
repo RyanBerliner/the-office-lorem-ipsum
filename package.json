@@ -1,0 +1,11 @@
+{
+  "name": "the-office-lorem-ipsum",
+  "scripts": {
+    "start": "esbuild script.js --bundle  --sourcemap --watch --outfile=script.dist.js",
+    "build": "esbuild script.js --bundle  --minify --outfile=script.dist.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.14.38",
+    "the-office": "^1.0.1"
+  }
+}
