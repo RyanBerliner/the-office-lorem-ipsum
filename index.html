@@ -3,6 +3,7 @@
     <title>The Office Lorem Ipsum</title>
   </head>
   <body>
+    <h1>Dunder Mipsum</h1>
     <form>
       <label>Number of paragraphs
         <input type="number" value="5" min="1" max="100" name="paragraphs" required />
@@ -12,7 +13,19 @@
       </label>
       <button>Generate</button>
     </form>
-    <div id="output"></div>
+    <div id="output" style="border: 1px solid; padding: 1rem;">
+      <p>Click "Generate" above to output lorem ipsum...</p>
+    </div>
+    <h2>About Dunder Mipsum</h2>
+    <p>This is a lorem ipsum generator that only uses lines from the tv show <a href="https://en.wikipedia.org/wiki/The_Office_(American_TV_series)" target="_blank" rel="noopener noreferrer">The Office.</a>
+    <ul>
+      <li>
+        Lines provided by <a href="https://www.npmjs.com/package/the-office" target="_blank" rel="noopener noreferrer">the-office</a>
+      </li>
+      <li>
+        Improve this project on <a href="https://github.com/RyanBerliner/the-office-lorem-ipsum" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </li>
+    </ul>
     <script async defer src="script.dist.js"></script>
   </body>
 </html>
