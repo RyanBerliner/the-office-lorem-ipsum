@@ -3,6 +3,8 @@ import episodes from 'the-office';
 const form = document.querySelector('form');
 const container = document.getElementById('output');
 
+form.querySelector('button').removeAttribute('disabled');
+
 function randomNumber(max) {
   return Math.floor(Math.random() * max);
 }
