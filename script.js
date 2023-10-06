@@ -2,6 +2,7 @@ import episodes from 'the-office';
 
 const form = document.querySelector('form');
 const search = document.querySelector('[type="search"]');
+const results = document.getElementById('results');
 const container = document.getElementById('output');
 
 form.querySelector('button').removeAttribute('disabled');
@@ -86,7 +87,7 @@ lines.forEach(line => {
 
 search.addEventListener('input', event => {
   const cleaned = cleanLine(event.target.value);
-  const words = new Set([...cleaned.split(' ')]);
+  const words = new Set([...cleaned.split(' ').filter(word => !!word)]);
   if (!words) return;
 
   const lineIds = [];
@@ -105,12 +106,14 @@ search.addEventListener('input', event => {
   }, false);
 
   let count = 0;
-  console.log('-----------------------');
-  for (let i = 0; i < 3; i++) {
+  results.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
     const inter = intersection[i];
     if (!inter) return;
     const [e, s, l] = inter.split('-');
     const line = episodes[parseInt(e)].scenes[parseInt(s)][l];
-    console.log(line);
+    const quote = document.createElement('li');
+    quote.innerText = line.line;
+    results.append(quote);
   };
 });
