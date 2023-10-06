@@ -78,7 +78,7 @@ function ingest(word, id, triePart) {
 }
 
 lines.forEach(line => {
-  const words = line.line.split(' ');
+  const words = new Set([...line.line.split(' ')]);
   words.forEach(word => {
     ingest(word, line.id, trie['desc']);
   });
@@ -86,7 +86,7 @@ lines.forEach(line => {
 
 search.addEventListener('input', event => {
   const cleaned = cleanLine(event.target.value);
-  const words = cleaned.split(' ');
+  const words = new Set([...cleaned.split(' ')]);
   if (!words) return;
 
   const lineIds = [];
@@ -110,7 +110,7 @@ search.addEventListener('input', event => {
     const inter = intersection[i];
     if (!inter) return;
     const [e, s, l] = inter.split('-');
-    const line = episodes[parseInt(e)].scenes[parseInt(s)][l].line;
+    const line = episodes[parseInt(e)].scenes[parseInt(s)][l];
     console.log(line);
   };
 });
