@@ -1,6 +1,7 @@
 import episodes from 'the-office';
 
 const form = document.querySelector('form');
+const search = document.querySelector('[type="search"]');
 const container = document.getElementById('output');
 
 form.querySelector('button').removeAttribute('disabled');
@@ -45,4 +46,71 @@ form.addEventListener('submit', event => {
     }
     container.appendChild(p);
   }
+});
+
+const lines = [];
+
+function cleanLine(line) {
+  return line.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
+}
+
+episodes.forEach((episode, e) => {
+  episode.scenes.forEach((scene, s) => {
+    scene.forEach((line, l) => {
+      lines.push({
+        line: cleanLine(line.line),
+        id: `${e}-${s}-${l}`
+      });
+    });
+  });
+});
+
+const line = lines[0];
+
+const trie = {'rec': [], 'desc': {}};
+
+function ingest(word, id, triePart) {
+  if (word.length === 0) return;
+  const c = word[0];
+  if (!triePart[c]) triePart[c] = {'rec': [], 'desc': {}};
+  if (word.length === 1) triePart[c]['rec'].push(id);
+  return ingest(word.substring(1), id, triePart[c]['desc'])
+}
+
+lines.forEach(line => {
+  const words = line.line.split(' ');
+  words.forEach(word => {
+    ingest(word, line.id, trie['desc']);
+  });
+});
+
+search.addEventListener('input', event => {
+  const cleaned = cleanLine(event.target.value);
+  const words = cleaned.split(' ');
+  if (!words) return;
+
+  const lineIds = [];
+
+  words.forEach(word => {
+    let tree = trie;
+    word.split('').forEach(c => {
+      tree = tree?.['desc']?.[c];
+    });
+    lineIds.push(tree?.rec || []);
+  });
+
+  const intersection = lineIds.reduce((prev, curr) => {
+    if (prev === false) return curr;
+    return prev.filter(p => curr.includes(p));
+  }, false);
+
+  let count = 0;
+  console.log('-----------------------');
+  for (let i = 0; i < 3; i++) {
+    const inter = intersection[i];
+    if (!inter) return;
+    const [e, s, l] = inter.split('-');
+    const line = episodes[parseInt(e)].scenes[parseInt(s)][l].line;
+    console.log(line);
+  };
 });
