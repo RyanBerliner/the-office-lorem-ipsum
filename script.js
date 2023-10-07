@@ -83,24 +83,24 @@ searchWorkers.forEach(worker => {
     lastUpdate = time;
     let count = 0;
     results.innerHTML = '';
-    const reg = new RegExp('^(' + search.value.split(' ').map(x => cleanLine(x)).filter(x => !!x).join('|') + ')');
+    const reg = new RegExp('(^|\\W)' + search.value.split(' ').map(x => cleanLine(x)).filter(x => !!x).join('|(^|\\W)'), 'gi');
     for (let i = 0; i < 10; i++) {
       const inter = intersection[i];
       if (!inter) return;
       const [e, s, l] = inter.split('-');
       const line = episodes[parseInt(e)].scenes[parseInt(s)][l];
       const quote = document.createElement('li');
-      const words = line.line.split(' ');
-      words.forEach(word => {
+      let adjusted = line.line.replace(reg, "|M|$&|M|");
+      adjusted = adjusted.replaceAll("|M||M|", "");
+      adjusted.split("|M|").forEach((part, i) => {
         let node;
-        if (reg.test(cleanLine(word))) {
+        if (i % 2) {
           node = document.createElement('mark');
-          node.innerHTML = word;
+          node.innerHTML = part;
         } else {
-          node = document.createTextNode(word);
+          node = document.createTextNode(part);
         }
         quote.appendChild(node);
-        quote.appendChild(document.createTextNode(' '));
       });
       results.append(quote);
     };
