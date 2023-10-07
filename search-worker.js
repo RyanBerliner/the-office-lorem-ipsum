@@ -96,6 +96,15 @@ onmessage = msg => {
     return idIntersection(prev, curr);
   }, false);
 
+  // lets assume short quotes are a closer match
+  (intersection || []).sort((a, b) => {
+    const [ae, as, al] = a.split('-').map(x => parseInt(x));
+    const [be, bs, bl] = b.split('-').map(x => parseInt(x));
+    const linea = episodes[ae].scenes[as][al].line;
+    const lineb = episodes[be].scenes[bs][bl].line;
+    return linea.length < lineb.length ? -1 : linea.length > lineb.length ? 1 : 0;
+  });
+
   postMessage([time, intersection, {
     time: performance.now() - start,
     length: intersection.length,
