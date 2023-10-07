@@ -69,6 +69,10 @@ search.addEventListener('input', event => {
   }, debounce);
 });
 
+function cleanLine(line) {
+  return line.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
+}
+
 // theres gotta be a way to delegate this...
 let lastUpdate = performance.now();
 searchWorkers.forEach(worker => {
@@ -79,13 +83,25 @@ searchWorkers.forEach(worker => {
     lastUpdate = time;
     let count = 0;
     results.innerHTML = '';
+    const reg = new RegExp('^(' + search.value.split(' ').map(x => cleanLine(x)).filter(x => !!x).join('|') + ')');
     for (let i = 0; i < 10; i++) {
       const inter = intersection[i];
       if (!inter) return;
       const [e, s, l] = inter.split('-');
       const line = episodes[parseInt(e)].scenes[parseInt(s)][l];
       const quote = document.createElement('li');
-      quote.innerText = line.line;
+      const words = line.line.split(' ');
+      words.forEach(word => {
+        let node;
+        if (reg.test(cleanLine(word))) {
+          node = document.createElement('mark');
+          node.innerHTML = word;
+        } else {
+          node = document.createTextNode(word);
+        }
+        quote.appendChild(node);
+        quote.appendChild(document.createTextNode(' '));
+      });
       results.append(quote);
     };
   };
