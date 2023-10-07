@@ -78,6 +78,16 @@ function ingest(word, id, triePart) {
   return ingest(word.substring(1), id, triePart[c]['desc'])
 }
 
+function retrieveAll(tree) {
+  const direct = tree?.rec || [];
+  const children = [];
+  Object.keys(tree?.desc || {}).forEach(key => {
+    if (key === 'rec') return;
+    children.push(...retrieveAll(tree.desc[key]));
+  });
+  return [...direct, ...children];
+}
+
 lines.forEach(line => {
   const words = new Set([...line.line.split(' ')]);
   words.forEach(word => {
@@ -97,7 +107,7 @@ search.addEventListener('input', event => {
     word.split('').forEach(c => {
       tree = tree?.['desc']?.[c];
     });
-    lineIds.push(tree?.rec || []);
+    lineIds.push(retrieveAll(tree));
   });
 
   const intersection = lineIds.reduce((prev, curr) => {
