@@ -92,7 +92,7 @@ onmessage = msg => {
   lineIds.sort((a, b) => a.length < b.length ? -1 : a.length > b.length ? 1 : 0);
 
   const intersection = lineIds.reduce((prev, curr) => {
-    if (prev === false) return curr;
+    if (prev === false) return Array.from(new Set(curr));
     return idIntersection(prev, curr);
   }, false);
 
