@@ -6,6 +6,33 @@ function cleanLine(line) {
   return line.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
 }
 
+function compareIds(a, b) {
+  const [ae, as, al] = a.split('-').map(x => parseInt(x));
+  const [be, bs, bl] = b.split('-').map(x => parseInt(x));
+  if (ae < be) return -1;
+  if (be < ae) return 1;
+  if (as < bs) return -1;
+  if (bs < as) return 1;
+  if (al < bl) return -1;
+  if (bl < al) return 1;
+  return 0;
+}
+
+function idIntersection(a, b) {
+  let ai = 0;
+  let bi = 0;
+  const inter = [];
+  while (ai < a.length && bi < b.length) {
+    const comp = compareIds(a[ai], b[bi]);
+    if (comp === 0) {
+      inter.push(a[ai]);
+      ai++;
+      bi++;
+    } else if (comp > 0) { bi++; } else { ai++; }
+  }
+  return inter;
+}
+
 episodes.forEach((episode, e) => {
   episode.scenes.forEach((scene, s) => {
     scene.forEach((line, l) => {
@@ -58,18 +85,15 @@ onmessage = msg => {
     word.split('').forEach(c => {
       tree = tree?.['desc']?.[c];
     });
-    lineIds.push(retrieveAll(tree));
+    lineIds.push(retrieveAll(tree).sort(compareIds));
   });
 
   // lets sort by the most exclusive term first
   lineIds.sort((a, b) => a.length < b.length ? -1 : a.length > b.length ? 1 : 0);
 
-  // this is not good but served as a POC
-  // TODO: lets line them all up and go through them at most n times (linear)
-  //       we can do this because all the records should be sorted (double check that)
   const intersection = lineIds.reduce((prev, curr) => {
     if (prev === false) return curr;
-    return prev.filter(p => curr.includes(p));
+    return idIntersection(prev, curr);
   }, false);
 
   postMessage([time, intersection, {
