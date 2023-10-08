@@ -8,7 +8,7 @@ const results = document.getElementById('results');
 // each new search
 const searchWorkers = [];
 if (window.Worker) {
-  for (let i = 0; i < navigator.hardwareConcurrency; i++) {
+  for (let i = 0; i < navigator?.hardwareConcurrency || 0; i++) {
     searchWorkers.push(new Worker('dist/search-worker.js'));
   }
 }
@@ -29,6 +29,8 @@ function performSearch(value) {
 }
 
 function showResults(ids) {
+  search.removeAttribute('disabled');
+
   results.innerHTML = '';
   const reg = new RegExp('\\b' + search.value.split(' ').map(x => cleanLine(x).split('').join('[^a-zA-Z0-9 ]?')).filter(x => !!x).join('|\\b'), 'gi');
   for (let i = 0; i < 100; i++) {
@@ -69,5 +71,5 @@ searchWorkers.forEach(worker => {
   };
 });
 
-// on load
-performSearch(search.value);
+// show on load
+showResults(retrieveResults(search.value));

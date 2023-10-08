@@ -33,18 +33,7 @@ function idIntersection(a, b) {
   return inter;
 }
 
-episodes.forEach((episode, e) => {
-  episode.scenes.forEach((scene, s) => {
-    scene.forEach((line, l) => {
-      lines.push({
-        line: cleanLine(line.line),
-        id: `${e}-${s}-${l}`
-      });
-    });
-  });
-});
-
-const trie = {'rec': [], 'desc': {}};
+let trie = null;
 
 function ingest(word, id, triePart) {
   if (word.length === 0) return;
@@ -52,6 +41,30 @@ function ingest(word, id, triePart) {
   if (!triePart[c]) triePart[c] = {'rec': [], 'desc': {}};
   if (word.length === 1) triePart[c]['rec'].push(id);
   return ingest(word.substring(1), id, triePart[c]['desc'])
+}
+
+function getOrCreateTrie() {
+  if (trie) return trie;
+
+  episodes.forEach((episode, e) => {
+    episode.scenes.forEach((scene, s) => {
+      scene.forEach((line, l) => {
+        lines.push({
+          line: cleanLine(line.line),
+          id: `${e}-${s}-${l}`
+        });
+      });
+    });
+  });
+
+  trie = {'rec': [], 'desc': {}};
+
+  lines.forEach(line => {
+    const words = new Set([...line.line.split(' ')]);
+    words.forEach(word => {
+      ingest(word, line.id, trie['desc']);
+    });
+  });
 }
 
 function retrieveAll(tree) {
@@ -64,12 +77,6 @@ function retrieveAll(tree) {
   return [...direct, ...children];
 }
 
-lines.forEach(line => {
-  const words = new Set([...line.line.split(' ')]);
-  words.forEach(word => {
-    ingest(word, line.id, trie['desc']);
-  });
-});
 
 export function retrieveResults(text) {
   const cleaned = cleanLine(text);
@@ -79,7 +86,7 @@ export function retrieveResults(text) {
   const lineIds = [];
 
   words.forEach(word => {
-    let tree = trie;
+    let tree = getOrCreateTrie();
     word.split('').forEach(c => {
       tree = tree?.['desc']?.[c];
     });
