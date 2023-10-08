@@ -45,7 +45,7 @@ searchWorkers.forEach(worker => {
       const line = episodes[parseInt(e)].scenes[parseInt(s)][l];
       const quote = document.createElement('li');
       let adjusted = line.line.replace(reg, "|M|$&|M|");
-      adjusted = adjusted.replaceAll("|M||M|", "");
+      adjusted = adjusted.replaceAll("|M| |M|", " ");
       adjusted.split("|M|").forEach((part, i) => {
         let node;
         if (i % 2) {
