@@ -1,14 +1,7 @@
-:root {
-  font-size: 16px;
-}
-
 html {
-  font-size: 1rem;
+  font-size: 17px;
+  line-height: 1.5;
   font-family: sans-serif;
-}
-
-input {
-  font-size: 1rem;
 }
 
 body {
@@ -17,7 +10,42 @@ body {
   max-width: 1000px;
 }
 
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2rem auto;
+}
+
+header h1 {
+  margin: 0;
+}
+
+header nav {
+  display: flex;
+  align-items: center;
+}
+
+header nav a {
+  margin-left: 0.75rem;
+}
+
+a {
+  text-underline-offset: 0.17em;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-block-start: 1em;
+  margin-block-end: 0.5em;
+}
+
 #output {
   border: 1px solid;
   padding: 1rem;
+}
+
+input, button {
+  font-size: 1rem;
 }
