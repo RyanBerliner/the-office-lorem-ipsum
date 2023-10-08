@@ -32,6 +32,14 @@ function showResults(ids) {
   search.removeAttribute('disabled');
 
   results.innerHTML = '';
+  if (ids?.length === 0) {
+    const li = document.createElement('li');
+    li.classList.add('no-results');
+    li.innerHTML = 'No quotes found';
+    results.appendChild(li);
+    return;
+  }
+
   const reg = new RegExp('\\b' + search.value.split(' ').map(x => cleanLine(x).split('').join('[^a-zA-Z0-9 ]?')).filter(x => !!x).join('|\\b'), 'gi');
   for (let i = 0; i < 100; i++) {
     const inter = ids[i];
