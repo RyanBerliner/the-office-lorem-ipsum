@@ -46,6 +46,33 @@ h1,h2,h3,h4,h5,h6 {
   padding: 1rem;
 }
 
+#results {
+  list-style: none;
+  padding: 0;
+  margin: 2rem auto;
+}
+
+#results li {
+  margin-bottom: 1rem;
+}
+
+#results p {
+  margin: 0.2em auto;
+}
+
+#results mark {
+  font-weight: 700;
+}
+
+#results span {
+  color: rgba(0,0,0,0.6);
+}
+
+#results strong {
+  font-weight: 400;
+  color: rgba(0,0,0,1);
+}
+
 input, button {
   font-size: 1rem;
 }

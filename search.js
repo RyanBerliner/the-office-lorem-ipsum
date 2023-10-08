@@ -45,8 +45,9 @@ function showResults(ids) {
     const inter = ids[i];
     if (!inter) return;
     const [e, s, l] = inter.split('-');
-    const line = episodes[parseInt(e)].scenes[parseInt(s)][l];
-    const quote = document.createElement('li');
+    const episode = episodes[parseInt(e)]
+    const line = episode.scenes[parseInt(s)][l];
+    const quote = document.createElement('p');
     let adjusted = line.line.replace(reg, "|M|$&|M|");
     adjusted = adjusted.replaceAll("|M| |M|", " ");
     adjusted.split("|M|").forEach((part, i) => {
@@ -59,7 +60,12 @@ function showResults(ids) {
       }
       quote.appendChild(node);
     });
-    results.append(quote);
+    const wrapper = document.createElement('li');
+    wrapper.appendChild(quote);
+    const info = document.createElement('span');
+    info.innerHTML = `<strong>${line.character}</strong> in Season ${episode.season} Episode ${episode.episode} "${episode.title}"`;
+    wrapper.appendChild(info);
+    results.append(wrapper);
   };
 }
 
