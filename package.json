@@ -1,8 +1,8 @@
 {
   "name": "the-office-lorem-ipsum",
   "scripts": {
-    "start": "esbuild script.js search-worker.js --bundle  --sourcemap --watch --outdir=dist",
-    "build": "esbuild script.js search-worker.js --bundle  --minify --outdir=dist"
+    "start": "esbuild script.js search.js search-worker.js --bundle --sourcemap --watch --outdir=dist",
+    "build": "esbuild script.js search.js search-worker.js --bundle --minify --outdir=dist"
   },
   "dependencies": {
     "esbuild": "^0.14.38",
