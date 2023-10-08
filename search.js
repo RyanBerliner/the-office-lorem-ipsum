@@ -63,7 +63,7 @@ searchWorkers.forEach(worker => {
   worker.onmessage = e => {
     const [time, ids, data] = e.data;
     if (time < lastUpdate) return;
-    console.log(data);
+    // console.log(data);
     lastUpdate = time;
     showResults(ids);
   };
