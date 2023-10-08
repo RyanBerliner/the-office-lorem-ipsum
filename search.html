@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Dunder Mipsum - "The Office" themed lorem ipsum</title>
-		<meta name="description" content="A lorem ipsum generator that only uses lines from the tv show The Office.">
+    <meta charset="UTF-8">
+		<title>Dunder Mipsum - Instant Quote Search for "The Office"</title>
+		<meta name="description" content="Instantly search every line said in the TV show The Office.">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="prefetch" href="dist/script.js" />
 		<link rel="stylesheet" href="styles.css" />
@@ -16,7 +18,8 @@
       </nav>
     </header>
 		<h2>Search Quotes</h2>
-    <input type="search" placeholder="Search the entire series..." disabled />
+		<p class="mt-0">Instantly search every line in <a href="https://en.wikipedia.org/wiki/The_Office_(American_TV_series)" target="_blank" rel="noopener noreferrer">The Office.</a></p>
+    <input type="search" placeholder="Search the entire series..." disabled aria-label="Search quotes, results instantly populated below this field" />
     <ul id="results">
     </ul>
 		<script async defer src="dist/search.js"></script>
