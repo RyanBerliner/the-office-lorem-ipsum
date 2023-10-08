@@ -65,6 +65,8 @@ function getOrCreateTrie() {
       ingest(word, line.id, trie['desc']);
     });
   });
+
+  return trie;
 }
 
 function retrieveAll(tree) {
