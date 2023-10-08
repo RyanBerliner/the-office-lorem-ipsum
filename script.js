@@ -83,8 +83,8 @@ searchWorkers.forEach(worker => {
     lastUpdate = time;
     let count = 0;
     results.innerHTML = '';
-    const reg = new RegExp('(^|\\W)' + search.value.split(' ').map(x => cleanLine(x)).filter(x => !!x).join('|(^|\\W)'), 'gi');
-    for (let i = 0; i < 10; i++) {
+    const reg = new RegExp('\\b' + search.value.split(' ').map(x => cleanLine(x).split('').join('[^a-zA-Z0-9 ]?')).filter(x => !!x).join('|\\b'), 'gi');
+    for (let i = 0; i < 100; i++) {
       const inter = intersection[i];
       if (!inter) return;
       const [e, s, l] = inter.split('-');
