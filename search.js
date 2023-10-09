@@ -1,8 +1,9 @@
 import episodes from 'the-office';
-import { cleanLine, retrieveResults } from './search-utils';
+import { cleanLine, Search } from './search-utils';
 
 const search = document.querySelector('[type="search"]');
 const results = document.getElementById('results');
+const searchObj = new Search();
 
 // lets boot as many workers at there are cores, cycle through them on
 // each new search
@@ -23,7 +24,7 @@ function performSearch(value) {
       searchWorkers[currentWorker].postMessage([performance.now(), value]);
       currentWorker = currentWorker < searchWorkers.length  - 1 ? currentWorker + 1 : 0;
     } else {
-      showResults(retrieveResults(value));
+      showResults(searchObj.retrieveResults(value));
     }
   }, debounce);
 }
@@ -86,4 +87,4 @@ searchWorkers.forEach(worker => {
 });
 
 // show on load
-showResults(retrieveResults(search.value));
+showResults(searchObj.retrieveResults(search.value));

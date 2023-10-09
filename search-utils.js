@@ -1,8 +1,6 @@
 import episodes from 'the-office';
 
-const lines = [];
-
-export function cleanLine(line) {
+function cleanLine(line) {
   return line.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
 }
 
@@ -33,84 +31,91 @@ function idIntersection(a, b) {
   return inter;
 }
 
-let trie = null;
+class Search {
+  constructor() {
+    this._lines = [];
+    this._trie = null;
+  }
 
-function ingest(word, id, triePart) {
-  if (word.length === 0) return;
-  const c = word[0];
-  if (!triePart[c]) triePart[c] = {'rec': [], 'desc': {}};
-  if (word.length === 1) triePart[c]['rec'].push(id);
-  return ingest(word.substring(1), id, triePart[c]['desc'])
-}
-
-function getOrCreateTrie() {
-  if (trie) return trie;
-
-  episodes.forEach((episode, e) => {
-    episode.scenes.forEach((scene, s) => {
-      scene.forEach((line, l) => {
-        lines.push({
-          line: cleanLine(line.line),
-          id: `${e}-${s}-${l}`
+  get lines() {
+    if (this._lines.length) return this.lines;
+    episodes.forEach((episode, e) => {
+      episode.scenes.forEach((scene, s) => {
+        scene.forEach((line, l) => {
+          this._lines.push({
+            line: cleanLine(line.line),
+            id: `${e}-${s}-${l}`
+          });
         });
       });
     });
-  });
+    return this._lines;
+  }
 
-  trie = {'rec': [], 'desc': {}};
+  get trie() {
+    if (this._trie) return this._trie;
+    this._trie = {'rec': [], 'desc': {}};
+    this.lines.forEach(line => {
+      const words = new Set([...line.line.split(' ')]);
+      words.forEach(word => {
+        this._ingest(word, line.id, this._trie['desc']);
+      });
+    });
+    return this._trie;
+  }
 
-  lines.forEach(line => {
-    const words = new Set([...line.line.split(' ')]);
+  retrieveResults(text) {
+    const cleaned = cleanLine(text);
+    const words = new Set([...cleaned.split(' ').filter(word => !!word)]);
+    if (!words) return;
+
+    const lineIds = [];
+
     words.forEach(word => {
-      ingest(word, line.id, trie['desc']);
+      let trie = this.trie;
+      word.split('').forEach(c => {
+        trie = trie?.['desc']?.[c];
+      });
+      lineIds.push(this._retrieveAll(trie).sort(compareIds));
     });
-  });
 
-  return trie;
-}
+    // lets sort by the most exclusive term first
+    lineIds.sort((a, b) => a.length < b.length ? -1 : a.length > b.length ? 1 : 0);
 
-function retrieveAll(tree) {
-  const direct = tree?.rec || [];
-  const children = [];
-  Object.keys(tree?.desc || {}).forEach(key => {
-    if (key === 'rec') return;
-    children.push(...retrieveAll(tree.desc[key]));
-  });
-  return [...direct, ...children];
-}
+    const intersection = lineIds.reduce((prev, curr) => {
+      if (prev === false) return Array.from(new Set(curr));
+      return idIntersection(prev, curr);
+    }, false);
 
-
-export function retrieveResults(text) {
-  const cleaned = cleanLine(text);
-  const words = new Set([...cleaned.split(' ').filter(word => !!word)]);
-  if (!words) return;
-
-  const lineIds = [];
-
-  words.forEach(word => {
-    let tree = getOrCreateTrie();
-    word.split('').forEach(c => {
-      tree = tree?.['desc']?.[c];
+    // lets assume short quotes are a closer match
+    (intersection || []).sort((a, b) => {
+      const [ae, as, al] = a.split('-').map(x => parseInt(x));
+      const [be, bs, bl] = b.split('-').map(x => parseInt(x));
+      const linea = episodes[ae].scenes[as][al].line;
+      const lineb = episodes[be].scenes[bs][bl].line;
+      return linea.length < lineb.length ? -1 : linea.length > lineb.length ? 1 : 0;
     });
-    lineIds.push(retrieveAll(tree).sort(compareIds));
-  });
 
-  // lets sort by the most exclusive term first
-  lineIds.sort((a, b) => a.length < b.length ? -1 : a.length > b.length ? 1 : 0);
+    return intersection;
+  }
 
-  const intersection = lineIds.reduce((prev, curr) => {
-    if (prev === false) return Array.from(new Set(curr));
-    return idIntersection(prev, curr);
-  }, false);
+  _ingest(word, id, triePart) {
+    if (word.length === 0) return;
+    const c = word[0];
+    if (!triePart[c]) triePart[c] = {'rec': [], 'desc': {}};
+    if (word.length === 1) triePart[c]['rec'].push(id);
+    return this._ingest(word.substring(1), id, triePart[c]['desc'])
+  }
 
-  // lets assume short quotes are a closer match
-  (intersection || []).sort((a, b) => {
-    const [ae, as, al] = a.split('-').map(x => parseInt(x));
-    const [be, bs, bl] = b.split('-').map(x => parseInt(x));
-    const linea = episodes[ae].scenes[as][al].line;
-    const lineb = episodes[be].scenes[bs][bl].line;
-    return linea.length < lineb.length ? -1 : linea.length > lineb.length ? 1 : 0;
-  });
-
-  return intersection;
+  _retrieveAll(triePart) {
+    const direct = triePart?.rec || [];
+    const children = [];
+    Object.keys(triePart?.desc || {}).forEach(key => {
+      if (key === 'rec') return;
+      children.push(...this._retrieveAll(triePart.desc[key]));
+    });
+    return [...direct, ...children];
+  }
 }
+
+export { cleanLine, Search };
