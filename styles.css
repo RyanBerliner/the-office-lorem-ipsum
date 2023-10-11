@@ -79,5 +79,47 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 input, button {
+  appearance: none;
+  border-radius: 0.35em;
   font-size: 1rem;
+  padding: 0.25em 0.65em;
+  line-height: 1;
+  box-shadow: 0 0.05em 0.15em #0000001a, 0 0.15em 0.9em #00000005;
+}
+
+input[type="search"] {
+  width: 100%;
+  max-width: 420px;
+}
+
+input[type="number"] {
+  width: 3em;
+}
+
+input[type="search"], input[type="number"] {
+  background-color: white;
+  border: 1px solid #d5d5d5;
+  border-top-color: #00000017;
+  border-bottom-color: #00000036;
+}
+
+button {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  background-color: rgba(0,0,0,0.8);
+  border: 1px solid black;
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  padding-left: 0.55em;
+  padding-right: 0.55em;
+}
+
+button:hover, button:active {
+  background-color: black;
+}
+
+form input {
+  margin-left: 7px;
+  margin-right: 17px;
 }
