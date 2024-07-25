@@ -51,17 +51,20 @@ h1,h2,h3,h4,h5,h6 {
   margin: 2rem auto;
 }
 
-#results {
+#results,
+#episode-explorer ul {
   list-style: none;
   padding: 0;
   margin: 2rem auto;
 }
 
-#results li {
+#results li,
+#episode-explorer li {
   margin-bottom: 1rem;
 }
 
-#results p {
+#results p,
+#episode-explorer p {
   margin: 0.2em auto;
 }
 
@@ -69,13 +72,35 @@ h1,h2,h3,h4,h5,h6 {
   font-weight: 700;
 }
 
-#results span {
+#results span,
+#episode-explorer span {
   color: rgba(0,0,0,0.6);
 }
 
 #results strong {
   font-weight: 400;
   color: rgba(0,0,0,1);
+}
+
+#episode-explorer {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-top-left-radius: 0.35em;
+  border-top-right-radius: 0.35em;
+  bottom: 0;
+  box-shadow: 0 0.05em 0.15em #0000001a, 0 0.15em 0.9em #00000005;
+  height: 100%;
+  max-height: 500px;
+  max-width: 500px;
+  overflow-y: auto;
+  padding: 1rem;
+  position: fixed;
+  right: 0;
+  right: 2rem;
+  width: 100%;
+}
+
+#episode-explorer:empty {
+  display: none;
 }
 
 input, button {

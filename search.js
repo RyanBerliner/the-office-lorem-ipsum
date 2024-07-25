@@ -3,6 +3,7 @@ import { cleanLine, Search } from './search-utils';
 
 const search = document.querySelector('[type="search"]');
 const results = document.getElementById('results');
+const episodeExplorer = document.getElementById('episode-explorer');
 const searchObj = new Search();
 
 // lets boot as many workers at there are cores, cycle through them on
@@ -62,6 +63,7 @@ function showResults(ids) {
       quote.appendChild(node);
     });
     const wrapper = document.createElement('li');
+    wrapper.setAttribute('data-quote', inter);
     wrapper.appendChild(quote);
     const info = document.createElement('span');
     info.innerHTML = `<strong>${line.character}</strong> in Season ${episode.season} Episode ${episode.episode} "${episode.title}"`;
@@ -72,6 +74,33 @@ function showResults(ids) {
 
 search.addEventListener('input', event => {
   performSearch(event.target.value);
+});
+
+results.addEventListener('click', event => {
+  const target = event.target;
+  const quote = event.target.closest('[data-quote]');
+  const [e, s, l] = quote.dataset.quote.split('-');
+  const episode = episodes[parseInt(e)]
+  const line = episode.scenes[parseInt(s)][l];
+  const ul = document.createElement('ul');
+  console.log(episode);
+  episode.scenes.forEach((scene, s) => {
+    scene.forEach((line, l) => {
+      const li = document.createElement('li');
+      li.setAttribute('data-quote', `${e}-${s}-${l}`)
+      const p = document.createElement('p');
+      p.innerHTML = line.line;
+      li.appendChild(p);
+      const span = document.createElement('span');
+      span.innerHTML = line.character;
+      li.appendChild(span);
+      ul.appendChild(li);
+    });
+  });
+  episodeExplorer.innerHTML = '';
+  episodeExplorer.appendChild(ul);
+  const interest = results.querySelector(`[data-quote="${quote.dataset.quote}"]`);
+  // jump to the item of interest and highlight it
 });
 
 // theres gotta be a way to delegate this...
