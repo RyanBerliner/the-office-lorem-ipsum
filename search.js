@@ -79,6 +79,7 @@ search.addEventListener('input', event => {
 results.addEventListener('click', event => {
   const target = event.target;
   const quote = event.target.closest('[data-quote]');
+  if (!quote) return;
   const [e, s, l] = quote.dataset.quote.split('-');
   const episode = episodes[parseInt(e)]
   const line = episode.scenes[parseInt(s)][l];
@@ -89,18 +90,34 @@ results.addEventListener('click', event => {
       const li = document.createElement('li');
       li.setAttribute('data-quote', `${e}-${s}-${l}`)
       const p = document.createElement('p');
-      p.innerHTML = line.line;
+      const sp = document.createElement('span');
+      sp.innerHTML = line.line;
+      p.appendChild(sp);
       li.appendChild(p);
-      const span = document.createElement('span');
-      span.innerHTML = line.character;
-      li.appendChild(span);
+      const c = document.createElement('span');
+      c.classList.add('character');
+      c.innerHTML = line.character;
+      li.appendChild(c);
       ul.appendChild(li);
     });
   });
   episodeExplorer.innerHTML = '';
+  const heading = document.createElement('h3');
+  heading.innerHTML = `Season ${episode.season} Episode ${episode.episode} "${episode.title}"`;
+  const close = document.createElement('button');
+  close.innerHTML = 'Close Episode';
+  episodeExplorer.appendChild(heading);
   episodeExplorer.appendChild(ul);
-  const interest = results.querySelector(`[data-quote="${quote.dataset.quote}"]`);
-  // jump to the item of interest and highlight it
+  episodeExplorer.appendChild(close);
+  const interest = episodeExplorer.querySelector(`[data-quote="${quote.dataset.quote}"]`);
+  interest.classList.add('selected-quote');
+  episodeExplorer.scrollTop = interest.offsetTop - (episodeExplorer.offsetHeight/2) + (interest.offsetHeight/2);
+});
+
+episodeExplorer.addEventListener('click', event => {
+  const button = event.target.closest('button');
+  if (!button) return;
+  episodeExplorer.innerHTML = '';
 });
 
 // theres gotta be a way to delegate this...
