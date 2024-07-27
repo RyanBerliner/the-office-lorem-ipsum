@@ -87,7 +87,6 @@ results.addEventListener('click', event => {
   const episode = episodes[parseInt(e)]
   const line = episode.scenes[parseInt(s)][l];
   const ul = document.createElement('ul');
-  console.log(episode);
   episode.scenes.forEach((scene, s) => {
     scene.forEach((line, l) => {
       const li = document.createElement('li');
