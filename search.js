@@ -63,8 +63,11 @@ function showResults(ids) {
       quote.appendChild(node);
     });
     const wrapper = document.createElement('li');
-    wrapper.setAttribute('data-quote', inter);
-    wrapper.appendChild(quote);
+    const link = document.createElement('a');
+    link.setAttribute('href', '#episode-explorer');
+    link.setAttribute('data-quote', inter);
+    link.appendChild(quote);
+    wrapper.appendChild(link);
     const info = document.createElement('span');
     info.innerHTML = `<strong>${line.character}</strong> in Season ${episode.season} Episode ${episode.episode} "${episode.title}"`;
     wrapper.appendChild(info);

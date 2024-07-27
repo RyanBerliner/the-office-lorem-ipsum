@@ -63,8 +63,13 @@ h1,h2,h3,h4,h5,h6 {
   margin-bottom: 1rem;
 }
 
-#results li {
-  cursor: pointer;
+#results a {
+  display: inline-block;
+  color: inherit;
+}
+
+#results li > span {
+  display: block;
 }
 
 #results p,
